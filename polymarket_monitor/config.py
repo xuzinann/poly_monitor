@@ -15,11 +15,11 @@ class Config:
     ALERT_EMAIL = os.getenv("ALERT_EMAIL", "")
     
     PROBABILITY_THRESHOLD = float(os.getenv("PROBABILITY_THRESHOLD", "0.05"))
-    TRADE_SIZE_MIN = float(os.getenv("TRADE_SIZE_MIN", "100000"))
-    TRADE_SIZE_MAX = float(os.getenv("TRADE_SIZE_MAX", "500000"))
-    TRADE_SIZE_THRESHOLD = float(os.getenv("TRADE_SIZE_THRESHOLD", "100000"))
-    POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "60"))
-    MARKET_REFRESH_SECONDS = int(os.getenv("MARKET_REFRESH_SECONDS", "300"))
+    TRADE_SIZE_MIN = float(os.getenv("TRADE_SIZE_MIN", "50000"))
+    TRADE_SIZE_MAX = float(os.getenv("TRADE_SIZE_MAX", "10000000"))
+    TRADE_SIZE_THRESHOLD = float(os.getenv("TRADE_SIZE_THRESHOLD", "50000"))
+    POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "4"))
+    MARKET_REFRESH_SECONDS = int(os.getenv("MARKET_REFRESH_SECONDS", "360"))
 
     DATABASE_PATH = os.getenv("DATABASE_PATH", "polymarket_monitor.db")
     MARKET_CATEGORIES = os.getenv("MARKET_CATEGORIES", "sports,politics").split(",")
