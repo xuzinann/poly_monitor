@@ -65,7 +65,7 @@ def main():
     schedule.every(Config.MARKET_REFRESH_SECONDS).seconds.do(market_refresh_cycle)
     
     logger.info(f"Polling every {Config.POLL_INTERVAL_SECONDS}s, market refresh every {Config.MARKET_REFRESH_SECONDS}s")
-    logger.info(f"Thresholds: probability < {Config.PROBABILITY_THRESHOLD*100}%, trade size >= ${Config.TRADE_SIZE_THRESHOLD:,.0f}")
+    logger.info(f"Thresholds: probability < {Config.PROBABILITY_THRESHOLD*100}%, trade size ${Config.TRADE_SIZE_MIN:,.0f} - ${Config.TRADE_SIZE_MAX:,.0f}")
     
     monitor_cycle()
     

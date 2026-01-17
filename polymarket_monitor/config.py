@@ -15,11 +15,16 @@ class Config:
     ALERT_EMAIL = os.getenv("ALERT_EMAIL", "")
     
     PROBABILITY_THRESHOLD = float(os.getenv("PROBABILITY_THRESHOLD", "0.05"))
-    TRADE_SIZE_THRESHOLD = float(os.getenv("TRADE_SIZE_THRESHOLD", "300000"))
+    TRADE_SIZE_MIN = float(os.getenv("TRADE_SIZE_MIN", "100000"))
+    TRADE_SIZE_MAX = float(os.getenv("TRADE_SIZE_MAX", "500000"))
+    TRADE_SIZE_THRESHOLD = float(os.getenv("TRADE_SIZE_THRESHOLD", "100000"))
     POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "60"))
     MARKET_REFRESH_SECONDS = int(os.getenv("MARKET_REFRESH_SECONDS", "300"))
-    
+
     DATABASE_PATH = os.getenv("DATABASE_PATH", "polymarket_monitor.db")
+    MARKET_CATEGORIES = os.getenv("MARKET_CATEGORIES", "sports,politics").split(",")
+    TRADES_API_LIMIT = int(os.getenv("TRADES_API_LIMIT", "1000"))
+    MARKETS_API_LIMIT = int(os.getenv("MARKETS_API_LIMIT", "2000"))
     
     GAMMA_API_BASE = "https://gamma-api.polymarket.com"
     DATA_API_BASE = "https://data-api.polymarket.com"
@@ -30,4 +35,6 @@ class Config:
             print("WARNING: No alerting configured - alerts will only print to console")
         if cls.EMAIL_ENABLED and not cls.SMTP_PASSWORD:
             print("WARNING: EMAIL_ENABLED but SMTP_PASSWORD not set")
+        if cls.TRADE_SIZE_MIN > cls.TRADE_SIZE_MAX:
+            print("WARNING: TRADE_SIZE_MIN is greater than TRADE_SIZE_MAX")
         return True

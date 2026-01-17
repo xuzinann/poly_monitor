@@ -14,7 +14,9 @@ def fetch_large_trades():
     try:
         url = f"{Config.DATA_API_BASE}/trades"
         params = {
-            "limit": 100
+            "limit": Config.TRADES_API_LIMIT,
+            "filterType": "CASH",
+            "filterAmount": Config.TRADE_SIZE_MIN
         }
         
         response = requests.get(url, params=params, timeout=30, verify=False)
@@ -33,7 +35,8 @@ def fetch_large_trades():
             else:
                 dollar_value = size
             
-            if dollar_value < Config.TRADE_SIZE_THRESHOLD:
+            # Check if trade is within the configured range
+            if dollar_value < Config.TRADE_SIZE_MIN or dollar_value > Config.TRADE_SIZE_MAX:
                 continue
             
             condition_id = trade.get("conditionId", trade.get("market", ""))

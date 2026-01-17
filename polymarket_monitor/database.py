@@ -17,9 +17,18 @@ def init_database():
             current_probability REAL,
             outcome TEXT,
             last_updated TIMESTAMP,
-            active BOOLEAN DEFAULT 1
+            active BOOLEAN DEFAULT 1,
+            category TEXT DEFAULT 'other'
         )
     ''')
+
+    # Migration: Add category column if it doesn't exist
+    try:
+        cursor.execute("ALTER TABLE markets ADD COLUMN category TEXT DEFAULT 'other'")
+        conn.commit()
+    except sqlite3.OperationalError:
+        # Column already exists
+        pass
     
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS large_trades (
@@ -48,9 +57,9 @@ def upsert_market(market_data):
     cursor = conn.cursor()
     
     cursor.execute('''
-        INSERT OR REPLACE INTO markets 
-        (condition_id, title, slug, current_probability, outcome, last_updated, active)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT OR REPLACE INTO markets
+        (condition_id, title, slug, current_probability, outcome, last_updated, active, category)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         market_data["condition_id"],
         market_data["title"],
@@ -58,7 +67,8 @@ def upsert_market(market_data):
         market_data["current_probability"],
         market_data.get("outcome", ""),
         datetime.utcnow().isoformat(),
-        True
+        True,
+        market_data.get("category", "other")
     ))
     
     conn.commit()
@@ -69,16 +79,16 @@ def get_monitored_markets():
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT condition_id, title, current_probability, slug
+        SELECT condition_id, title, current_probability, slug, category
         FROM markets
         WHERE active = 1 AND current_probability < ?
     ''', (Config.PROBABILITY_THRESHOLD,))
-    
+
     rows = cursor.fetchall()
     conn.close()
-    
+
     return [
-        {"condition_id": r[0], "title": r[1], "current_probability": r[2], "slug": r[3]}
+        {"condition_id": r[0], "title": r[1], "current_probability": r[2], "slug": r[3], "category": r[4]}
         for r in rows
     ]
 
